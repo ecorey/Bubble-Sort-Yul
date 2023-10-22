@@ -43,6 +43,32 @@ contract CTF2 is Isolution2 {
     }
 
 
+      // Optimized manually
+      // one off almost works!
+    function copyArray(uint256[10] calldata unsortedArray) 
+        external pure returns (uint256[10] memory sortedArr) {
+        assembly {
+            // Base calldata offset for unsortedArray data (skipping the length field)
+            let unsortedArrayData := add(unsortedArray, 0x20)
+            // Base memory offset for sortedArr data
+            let sortedArrData := add(sortedArr, 0x20)
+            
+            // manual copying of the unsortedArray to sortedArr to be later sorted
+            mstore(sortedArrData, calldataload(unsortedArrayData)) // copy 1st element
+            mstore(add(sortedArrData, 0x20), calldataload(add(unsortedArrayData, 0x20)))  // copy 2nd element
+            mstore(add(sortedArrData, 0x40), calldataload(add(unsortedArrayData, 0x40)))  // copy 3rd element
+            mstore(add(sortedArrData, 0x60), calldataload(add(unsortedArrayData, 0x60)))  // copy 4th element
+            mstore(add(sortedArrData, 0x80), calldataload(add(unsortedArrayData, 0xa0)))  // copy 5th element
+            mstore(add(sortedArrData, 0xa0), calldataload(add(unsortedArrayData, 0xc0)))  // copy 6th element
+            mstore(add(sortedArrData, 0xc0), calldataload(add(unsortedArrayData, 0xe0)))  // copy 7th element
+            mstore(add(sortedArrData, 0xe0), calldataload(add(unsortedArrayData, 0x100))) // copy 8th element
+            mstore(add(sortedArrData, 0x100), calldataload(add(unsortedArrayData, 0x120)))// copy 9th element
+            mstore(add(sortedArrData, 0x120), calldataload(add(unsortedArrayData, 0x140)))// copy 10th element
+        }
+        return sortedArr;
+    }
+
+
 
     // Optimized manually
   function solution(uint256[10] calldata unsortedArray) 
