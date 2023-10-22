@@ -4,6 +4,7 @@
 
 
 /**
+[55, 66, 33, 785, 4, 56, 23, 526, 4444, 56]
  */
 
 //SPDX-License-Identifier:MIT
@@ -44,26 +45,20 @@ contract CTF2 is Isolution2 {
 
 
     // Optimized manually
-    function solution(uint256[10] calldata unsortedArray) 
-        external pure returns (uint256[10] memory sortedArr) {
-        assembly {
-            // length of the fixed array is 10
-            let n := 10  
-            // sets the base address for the sorted array to the memory slot of sortedArr at 0x20
-            let sortedArrPtr := add(sortedArr, 0x20) 
+  function solution(uint256[10] calldata unsortedArray) 
+    external pure returns (uint256[10] memory sortedArr) {
+    assembly {
+        
+        let sortedArrPtr := sortedArr  // Fixing the memory pointer
+        
 
-            // Copy unsorted array to sorted array
-            for { let i := 0 } lt(i, n) { i := add(i, 1) } {
-                let elem := mload(add(add(unsortedArray, 0x20), mul(i, 0x20)))
-                mstore(add(sortedArr, mul(i, 0x20)), elem)
-            }
+        // Corrected array copying
+        for { let i := 0 } lt(i, 10) { i := add(i, 1) } {
+            let elem := mload(add(add(unsortedArray, 0x20), mul(i, 0x20)))
+            mstore(add(sortedArrPtr, mul(i, 0x20)), elem)
+        }
 
-            // Helper function to swap two elements in the array
-            function swap(arr, i, j) {
-                let temp := mload(add(arr, mul(i, 0x20)))
-                mstore(add(arr, mul(i, 0x20)), mload(add(arr, mul(j, 0x20))))
-                mstore(add(arr, mul(j, 0x20)), temp)
-            }
+            
 
             // to bubble sort without a for loop there will be 9 passes with 9 steps each 
             // each step will the largest element bubbles up to its correct position.
@@ -75,34 +70,594 @@ contract CTF2 is Isolution2 {
             // then the two elements are compared and swapped if the first element is greater than the second element. 
 
             // first pass
-            if gt(mload(add(sortedArrPtr, 0x00)), mload(add(sortedArrPtr, 0x20))) { swap(sortedArrPtr, 0, 1) }
-            if gt(mload(add(sortedArrPtr, 0x20)), mload(add(sortedArrPtr, 0x40))) { swap(sortedArrPtr, 1, 2) }
-            if gt(mload(add(sortedArrPtr, 0x40)), mload(add(sortedArrPtr, 0x60))) { swap(sortedArrPtr, 2, 3) }
-            if gt(mload(add(sortedArrPtr, 0x60)), mload(add(sortedArrPtr, 0x80))) { swap(sortedArrPtr, 3, 4) }
-            if gt(mload(add(sortedArrPtr, 0x80)), mload(add(sortedArrPtr, 0xa0))) { swap(sortedArrPtr, 4, 5) }
-            if gt(mload(add(sortedArrPtr, 0xa0)), mload(add(sortedArrPtr, 0xc0))) { swap(sortedArrPtr, 5, 6) }
-            if gt(mload(add(sortedArrPtr, 0xc0)), mload(add(sortedArrPtr, 0xe0))) { swap(sortedArrPtr, 6, 7) }
-            if gt(mload(add(sortedArrPtr, 0xe0)), mload(add(sortedArrPtr, 0x100))) { swap(sortedArrPtr, 7, 8) }
-            if gt(mload(add(sortedArrPtr, 0x100)), mload(add(sortedArrPtr, 0x120))) { swap(sortedArrPtr, 8, 9) }
+            // first comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0x00)), mload(add(sortedArrPtr, 0x20))) {
+                let temp := mload(add(sortedArrPtr, 0x00))
+                mstore(add(sortedArrPtr, 0x00), mload(add(sortedArrPtr, 0x20)))
+                mstore(add(sortedArrPtr, 0x20), temp)
+            }
+
+            // second comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0x20)), mload(add(sortedArrPtr, 0x40))) {
+                let temp := mload(add(sortedArrPtr, 0x20))
+                mstore(add(sortedArrPtr, 0x20), mload(add(sortedArrPtr, 0x40)))
+                mstore(add(sortedArrPtr, 0x40), temp)
+            }
+
+            // third comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0x40)), mload(add(sortedArrPtr, 0x60))) {
+                let temp := mload(add(sortedArrPtr, 0x40))
+                mstore(add(sortedArrPtr, 0x40), mload(add(sortedArrPtr, 0x60)))
+                mstore(add(sortedArrPtr, 0x60), temp)
+            }
+
+            // fourth comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0x60)), mload(add(sortedArrPtr, 0x80))) {
+                let temp := mload(add(sortedArrPtr, 0x60))
+                mstore(add(sortedArrPtr, 0x60), mload(add(sortedArrPtr, 0x80)))
+                mstore(add(sortedArrPtr, 0x80), temp)
+            }
+
+            // fifth comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0x80)), mload(add(sortedArrPtr, 0xa0))) {
+                let temp := mload(add(sortedArrPtr, 0x80))
+                mstore(add(sortedArrPtr, 0x80), mload(add(sortedArrPtr, 0xa0)))
+                mstore(add(sortedArrPtr, 0xa0), temp)
+            }
+
+            // sixth comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0xa0)), mload(add(sortedArrPtr, 0xc0))) {
+                let temp := mload(add(sortedArrPtr, 0xa0))
+                mstore(add(sortedArrPtr, 0xa0), mload(add(sortedArrPtr, 0xc0)))
+                mstore(add(sortedArrPtr, 0xc0), temp)
+            }
+
+            // seventh comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0xc0)), mload(add(sortedArrPtr, 0xe0))) {
+                let temp := mload(add(sortedArrPtr, 0xc0))
+                mstore(add(sortedArrPtr, 0xc0), mload(add(sortedArrPtr, 0xe0)))
+                mstore(add(sortedArrPtr, 0xe0), temp)
+            }
+
+            // eighth comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0xe0)), mload(add(sortedArrPtr, 0x100))) {
+                let temp := mload(add(sortedArrPtr, 0xe0))
+                mstore(add(sortedArrPtr, 0xe0), mload(add(sortedArrPtr, 0x100)))
+                mstore(add(sortedArrPtr, 0x100), temp)
+            }
+
+            // ninth comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0x100)), mload(add(sortedArrPtr, 0x120))) {
+                let temp := mload(add(sortedArrPtr, 0x100))
+                mstore(add(sortedArrPtr, 0x100), mload(add(sortedArrPtr, 0x120)))
+                mstore(add(sortedArrPtr, 0x120), temp)
+            }
+
+            
+            
+           
 
             // second pass
+            // first comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0x00)), mload(add(sortedArrPtr, 0x20))) {
+                let temp := mload(add(sortedArrPtr, 0x00))
+                mstore(add(sortedArrPtr, 0x00), mload(add(sortedArrPtr, 0x20)))
+                mstore(add(sortedArrPtr, 0x20), temp)
+            }
+
+            // second comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0x20)), mload(add(sortedArrPtr, 0x40))) {
+                let temp := mload(add(sortedArrPtr, 0x20))
+                mstore(add(sortedArrPtr, 0x20), mload(add(sortedArrPtr, 0x40)))
+                mstore(add(sortedArrPtr, 0x40), temp)
+            }
+
+            // third comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0x40)), mload(add(sortedArrPtr, 0x60))) {
+                let temp := mload(add(sortedArrPtr, 0x40))
+                mstore(add(sortedArrPtr, 0x40), mload(add(sortedArrPtr, 0x60)))
+                mstore(add(sortedArrPtr, 0x60), temp)
+            }
+
+            // fourth comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0x60)), mload(add(sortedArrPtr, 0x80))) {
+                let temp := mload(add(sortedArrPtr, 0x60))
+                mstore(add(sortedArrPtr, 0x60), mload(add(sortedArrPtr, 0x80)))
+                mstore(add(sortedArrPtr, 0x80), temp)
+            }
+
+            // fifth comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0x80)), mload(add(sortedArrPtr, 0xa0))) {
+                let temp := mload(add(sortedArrPtr, 0x80))
+                mstore(add(sortedArrPtr, 0x80), mload(add(sortedArrPtr, 0xa0)))
+                mstore(add(sortedArrPtr, 0xa0), temp)
+            }
+
+            // sixth comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0xa0)), mload(add(sortedArrPtr, 0xc0))) {
+                let temp := mload(add(sortedArrPtr, 0xa0))
+                mstore(add(sortedArrPtr, 0xa0), mload(add(sortedArrPtr, 0xc0)))
+                mstore(add(sortedArrPtr, 0xc0), temp)
+            }
+
+            // seventh comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0xc0)), mload(add(sortedArrPtr, 0xe0))) {
+                let temp := mload(add(sortedArrPtr, 0xc0))
+                mstore(add(sortedArrPtr, 0xc0), mload(add(sortedArrPtr, 0xe0)))
+                mstore(add(sortedArrPtr, 0xe0), temp)
+            }
+
+            // eighth comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0xe0)), mload(add(sortedArrPtr, 0x100))) {
+                let temp := mload(add(sortedArrPtr, 0xe0))
+                mstore(add(sortedArrPtr, 0xe0), mload(add(sortedArrPtr, 0x100)))
+                mstore(add(sortedArrPtr, 0x100), temp)
+            }
+
+            // ninth comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0x100)), mload(add(sortedArrPtr, 0x120))) {
+                let temp := mload(add(sortedArrPtr, 0x100))
+                mstore(add(sortedArrPtr, 0x100), mload(add(sortedArrPtr, 0x120)))
+                mstore(add(sortedArrPtr, 0x120), temp)
+            }
+
+
 
             // third pass
+            // first comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0x00)), mload(add(sortedArrPtr, 0x20))) {
+                let temp := mload(add(sortedArrPtr, 0x00))
+                mstore(add(sortedArrPtr, 0x00), mload(add(sortedArrPtr, 0x20)))
+                mstore(add(sortedArrPtr, 0x20), temp)
+            }
+
+            // second comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0x20)), mload(add(sortedArrPtr, 0x40))) {
+                let temp := mload(add(sortedArrPtr, 0x20))
+                mstore(add(sortedArrPtr, 0x20), mload(add(sortedArrPtr, 0x40)))
+                mstore(add(sortedArrPtr, 0x40), temp)
+            }
+
+            // third comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0x40)), mload(add(sortedArrPtr, 0x60))) {
+                let temp := mload(add(sortedArrPtr, 0x40))
+                mstore(add(sortedArrPtr, 0x40), mload(add(sortedArrPtr, 0x60)))
+                mstore(add(sortedArrPtr, 0x60), temp)
+            }
+
+            // fourth comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0x60)), mload(add(sortedArrPtr, 0x80))) {
+                let temp := mload(add(sortedArrPtr, 0x60))
+                mstore(add(sortedArrPtr, 0x60), mload(add(sortedArrPtr, 0x80)))
+                mstore(add(sortedArrPtr, 0x80), temp)
+            }
+
+            // fifth comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0x80)), mload(add(sortedArrPtr, 0xa0))) {
+                let temp := mload(add(sortedArrPtr, 0x80))
+                mstore(add(sortedArrPtr, 0x80), mload(add(sortedArrPtr, 0xa0)))
+                mstore(add(sortedArrPtr, 0xa0), temp)
+            }
+
+            // sixth comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0xa0)), mload(add(sortedArrPtr, 0xc0))) {
+                let temp := mload(add(sortedArrPtr, 0xa0))
+                mstore(add(sortedArrPtr, 0xa0), mload(add(sortedArrPtr, 0xc0)))
+                mstore(add(sortedArrPtr, 0xc0), temp)
+            }
+
+            // seventh comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0xc0)), mload(add(sortedArrPtr, 0xe0))) {
+                let temp := mload(add(sortedArrPtr, 0xc0))
+                mstore(add(sortedArrPtr, 0xc0), mload(add(sortedArrPtr, 0xe0)))
+                mstore(add(sortedArrPtr, 0xe0), temp)
+            }
+
+            // eighth comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0xe0)), mload(add(sortedArrPtr, 0x100))) {
+                let temp := mload(add(sortedArrPtr, 0xe0))
+                mstore(add(sortedArrPtr, 0xe0), mload(add(sortedArrPtr, 0x100)))
+                mstore(add(sortedArrPtr, 0x100), temp)
+            }
+
+            // ninth comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0x100)), mload(add(sortedArrPtr, 0x120))) {
+                let temp := mload(add(sortedArrPtr, 0x100))
+                mstore(add(sortedArrPtr, 0x100), mload(add(sortedArrPtr, 0x120)))
+                mstore(add(sortedArrPtr, 0x120), temp)
+            }
+
 
             // fourth pass
+            // first comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0x00)), mload(add(sortedArrPtr, 0x20))) {
+                let temp := mload(add(sortedArrPtr, 0x00))
+                mstore(add(sortedArrPtr, 0x00), mload(add(sortedArrPtr, 0x20)))
+                mstore(add(sortedArrPtr, 0x20), temp)
+            }
 
+            // second comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0x20)), mload(add(sortedArrPtr, 0x40))) {
+                let temp := mload(add(sortedArrPtr, 0x20))
+                mstore(add(sortedArrPtr, 0x20), mload(add(sortedArrPtr, 0x40)))
+                mstore(add(sortedArrPtr, 0x40), temp)
+            }
+
+            // third comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0x40)), mload(add(sortedArrPtr, 0x60))) {
+                let temp := mload(add(sortedArrPtr, 0x40))
+                mstore(add(sortedArrPtr, 0x40), mload(add(sortedArrPtr, 0x60)))
+                mstore(add(sortedArrPtr, 0x60), temp)
+            }
+
+            // fourth comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0x60)), mload(add(sortedArrPtr, 0x80))) {
+                let temp := mload(add(sortedArrPtr, 0x60))
+                mstore(add(sortedArrPtr, 0x60), mload(add(sortedArrPtr, 0x80)))
+                mstore(add(sortedArrPtr, 0x80), temp)
+            }
+
+            // fifth comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0x80)), mload(add(sortedArrPtr, 0xa0))) {
+                let temp := mload(add(sortedArrPtr, 0x80))
+                mstore(add(sortedArrPtr, 0x80), mload(add(sortedArrPtr, 0xa0)))
+                mstore(add(sortedArrPtr, 0xa0), temp)
+            }
+
+            // sixth comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0xa0)), mload(add(sortedArrPtr, 0xc0))) {
+                let temp := mload(add(sortedArrPtr, 0xa0))
+                mstore(add(sortedArrPtr, 0xa0), mload(add(sortedArrPtr, 0xc0)))
+                mstore(add(sortedArrPtr, 0xc0), temp)
+            }
+
+            // seventh comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0xc0)), mload(add(sortedArrPtr, 0xe0))) {
+                let temp := mload(add(sortedArrPtr, 0xc0))
+                mstore(add(sortedArrPtr, 0xc0), mload(add(sortedArrPtr, 0xe0)))
+                mstore(add(sortedArrPtr, 0xe0), temp)
+            }
+
+            // eighth comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0xe0)), mload(add(sortedArrPtr, 0x100))) {
+                let temp := mload(add(sortedArrPtr, 0xe0))
+                mstore(add(sortedArrPtr, 0xe0), mload(add(sortedArrPtr, 0x100)))
+                mstore(add(sortedArrPtr, 0x100), temp)
+            }
+
+            // ninth comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0x100)), mload(add(sortedArrPtr, 0x120))) {
+                let temp := mload(add(sortedArrPtr, 0x100))
+                mstore(add(sortedArrPtr, 0x100), mload(add(sortedArrPtr, 0x120)))
+                mstore(add(sortedArrPtr, 0x120), temp)
+            }
+
+          
             // fifth pass
+            // first comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0x00)), mload(add(sortedArrPtr, 0x20))) {
+                let temp := mload(add(sortedArrPtr, 0x00))
+                mstore(add(sortedArrPtr, 0x00), mload(add(sortedArrPtr, 0x20)))
+                mstore(add(sortedArrPtr, 0x20), temp)
+            }
+
+            // second comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0x20)), mload(add(sortedArrPtr, 0x40))) {
+                let temp := mload(add(sortedArrPtr, 0x20))
+                mstore(add(sortedArrPtr, 0x20), mload(add(sortedArrPtr, 0x40)))
+                mstore(add(sortedArrPtr, 0x40), temp)
+            }
+
+            // third comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0x40)), mload(add(sortedArrPtr, 0x60))) {
+                let temp := mload(add(sortedArrPtr, 0x40))
+                mstore(add(sortedArrPtr, 0x40), mload(add(sortedArrPtr, 0x60)))
+                mstore(add(sortedArrPtr, 0x60), temp)
+            }
+
+            // fourth comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0x60)), mload(add(sortedArrPtr, 0x80))) {
+                let temp := mload(add(sortedArrPtr, 0x60))
+                mstore(add(sortedArrPtr, 0x60), mload(add(sortedArrPtr, 0x80)))
+                mstore(add(sortedArrPtr, 0x80), temp)
+            }
+
+            // fifth comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0x80)), mload(add(sortedArrPtr, 0xa0))) {
+                let temp := mload(add(sortedArrPtr, 0x80))
+                mstore(add(sortedArrPtr, 0x80), mload(add(sortedArrPtr, 0xa0)))
+                mstore(add(sortedArrPtr, 0xa0), temp)
+            }
+
+            // sixth comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0xa0)), mload(add(sortedArrPtr, 0xc0))) {
+                let temp := mload(add(sortedArrPtr, 0xa0))
+                mstore(add(sortedArrPtr, 0xa0), mload(add(sortedArrPtr, 0xc0)))
+                mstore(add(sortedArrPtr, 0xc0), temp)
+            }
+
+            // seventh comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0xc0)), mload(add(sortedArrPtr, 0xe0))) {
+                let temp := mload(add(sortedArrPtr, 0xc0))
+                mstore(add(sortedArrPtr, 0xc0), mload(add(sortedArrPtr, 0xe0)))
+                mstore(add(sortedArrPtr, 0xe0), temp)
+            }
+
+            // eighth comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0xe0)), mload(add(sortedArrPtr, 0x100))) {
+                let temp := mload(add(sortedArrPtr, 0xe0))
+                mstore(add(sortedArrPtr, 0xe0), mload(add(sortedArrPtr, 0x100)))
+                mstore(add(sortedArrPtr, 0x100), temp)
+            }
+
+            // ninth comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0x100)), mload(add(sortedArrPtr, 0x120))) {
+                let temp := mload(add(sortedArrPtr, 0x100))
+                mstore(add(sortedArrPtr, 0x100), mload(add(sortedArrPtr, 0x120)))
+                mstore(add(sortedArrPtr, 0x120), temp)
+            }
+
 
             // sixth pass
+            // first comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0x00)), mload(add(sortedArrPtr, 0x20))) {
+                let temp := mload(add(sortedArrPtr, 0x00))
+                mstore(add(sortedArrPtr, 0x00), mload(add(sortedArrPtr, 0x20)))
+                mstore(add(sortedArrPtr, 0x20), temp)
+            }
+
+            // second comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0x20)), mload(add(sortedArrPtr, 0x40))) {
+                let temp := mload(add(sortedArrPtr, 0x20))
+                mstore(add(sortedArrPtr, 0x20), mload(add(sortedArrPtr, 0x40)))
+                mstore(add(sortedArrPtr, 0x40), temp)
+            }
+
+            // third comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0x40)), mload(add(sortedArrPtr, 0x60))) {
+                let temp := mload(add(sortedArrPtr, 0x40))
+                mstore(add(sortedArrPtr, 0x40), mload(add(sortedArrPtr, 0x60)))
+                mstore(add(sortedArrPtr, 0x60), temp)
+            }
+
+            // fourth comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0x60)), mload(add(sortedArrPtr, 0x80))) {
+                let temp := mload(add(sortedArrPtr, 0x60))
+                mstore(add(sortedArrPtr, 0x60), mload(add(sortedArrPtr, 0x80)))
+                mstore(add(sortedArrPtr, 0x80), temp)
+            }
+
+            // fifth comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0x80)), mload(add(sortedArrPtr, 0xa0))) {
+                let temp := mload(add(sortedArrPtr, 0x80))
+                mstore(add(sortedArrPtr, 0x80), mload(add(sortedArrPtr, 0xa0)))
+                mstore(add(sortedArrPtr, 0xa0), temp)
+            }
+
+            // sixth comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0xa0)), mload(add(sortedArrPtr, 0xc0))) {
+                let temp := mload(add(sortedArrPtr, 0xa0))
+                mstore(add(sortedArrPtr, 0xa0), mload(add(sortedArrPtr, 0xc0)))
+                mstore(add(sortedArrPtr, 0xc0), temp)
+            }
+
+            // seventh comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0xc0)), mload(add(sortedArrPtr, 0xe0))) {
+                let temp := mload(add(sortedArrPtr, 0xc0))
+                mstore(add(sortedArrPtr, 0xc0), mload(add(sortedArrPtr, 0xe0)))
+                mstore(add(sortedArrPtr, 0xe0), temp)
+            }
+
+            // eighth comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0xe0)), mload(add(sortedArrPtr, 0x100))) {
+                let temp := mload(add(sortedArrPtr, 0xe0))
+                mstore(add(sortedArrPtr, 0xe0), mload(add(sortedArrPtr, 0x100)))
+                mstore(add(sortedArrPtr, 0x100), temp)
+            }
+
+            // ninth comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0x100)), mload(add(sortedArrPtr, 0x120))) {
+                let temp := mload(add(sortedArrPtr, 0x100))
+                mstore(add(sortedArrPtr, 0x100), mload(add(sortedArrPtr, 0x120)))
+                mstore(add(sortedArrPtr, 0x120), temp)
+            }
+
 
             // seventh pass
+            // first comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0x00)), mload(add(sortedArrPtr, 0x20))) {
+                let temp := mload(add(sortedArrPtr, 0x00))
+                mstore(add(sortedArrPtr, 0x00), mload(add(sortedArrPtr, 0x20)))
+                mstore(add(sortedArrPtr, 0x20), temp)
+            }
 
+            // second comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0x20)), mload(add(sortedArrPtr, 0x40))) {
+                let temp := mload(add(sortedArrPtr, 0x20))
+                mstore(add(sortedArrPtr, 0x20), mload(add(sortedArrPtr, 0x40)))
+                mstore(add(sortedArrPtr, 0x40), temp)
+            }
+
+            // third comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0x40)), mload(add(sortedArrPtr, 0x60))) {
+                let temp := mload(add(sortedArrPtr, 0x40))
+                mstore(add(sortedArrPtr, 0x40), mload(add(sortedArrPtr, 0x60)))
+                mstore(add(sortedArrPtr, 0x60), temp)
+            }
+
+            // fourth comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0x60)), mload(add(sortedArrPtr, 0x80))) {
+                let temp := mload(add(sortedArrPtr, 0x60))
+                mstore(add(sortedArrPtr, 0x60), mload(add(sortedArrPtr, 0x80)))
+                mstore(add(sortedArrPtr, 0x80), temp)
+            }
+
+            // fifth comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0x80)), mload(add(sortedArrPtr, 0xa0))) {
+                let temp := mload(add(sortedArrPtr, 0x80))
+                mstore(add(sortedArrPtr, 0x80), mload(add(sortedArrPtr, 0xa0)))
+                mstore(add(sortedArrPtr, 0xa0), temp)
+            }
+
+            // sixth comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0xa0)), mload(add(sortedArrPtr, 0xc0))) {
+                let temp := mload(add(sortedArrPtr, 0xa0))
+                mstore(add(sortedArrPtr, 0xa0), mload(add(sortedArrPtr, 0xc0)))
+                mstore(add(sortedArrPtr, 0xc0), temp)
+            }
+
+            // seventh comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0xc0)), mload(add(sortedArrPtr, 0xe0))) {
+                let temp := mload(add(sortedArrPtr, 0xc0))
+                mstore(add(sortedArrPtr, 0xc0), mload(add(sortedArrPtr, 0xe0)))
+                mstore(add(sortedArrPtr, 0xe0), temp)
+            }
+
+            // eighth comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0xe0)), mload(add(sortedArrPtr, 0x100))) {
+                let temp := mload(add(sortedArrPtr, 0xe0))
+                mstore(add(sortedArrPtr, 0xe0), mload(add(sortedArrPtr, 0x100)))
+                mstore(add(sortedArrPtr, 0x100), temp)
+            }
+
+            // ninth comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0x100)), mload(add(sortedArrPtr, 0x120))) {
+                let temp := mload(add(sortedArrPtr, 0x100))
+                mstore(add(sortedArrPtr, 0x100), mload(add(sortedArrPtr, 0x120)))
+                mstore(add(sortedArrPtr, 0x120), temp)
+            }
+
+          
             // eigth pass
+            // first comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0x00)), mload(add(sortedArrPtr, 0x20))) {
+                let temp := mload(add(sortedArrPtr, 0x00))
+                mstore(add(sortedArrPtr, 0x00), mload(add(sortedArrPtr, 0x20)))
+                mstore(add(sortedArrPtr, 0x20), temp)
+            }
+
+            // second comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0x20)), mload(add(sortedArrPtr, 0x40))) {
+                let temp := mload(add(sortedArrPtr, 0x20))
+                mstore(add(sortedArrPtr, 0x20), mload(add(sortedArrPtr, 0x40)))
+                mstore(add(sortedArrPtr, 0x40), temp)
+            }
+
+            // third comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0x40)), mload(add(sortedArrPtr, 0x60))) {
+                let temp := mload(add(sortedArrPtr, 0x40))
+                mstore(add(sortedArrPtr, 0x40), mload(add(sortedArrPtr, 0x60)))
+                mstore(add(sortedArrPtr, 0x60), temp)
+            }
+
+            // fourth comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0x60)), mload(add(sortedArrPtr, 0x80))) {
+                let temp := mload(add(sortedArrPtr, 0x60))
+                mstore(add(sortedArrPtr, 0x60), mload(add(sortedArrPtr, 0x80)))
+                mstore(add(sortedArrPtr, 0x80), temp)
+            }
+
+            // fifth comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0x80)), mload(add(sortedArrPtr, 0xa0))) {
+                let temp := mload(add(sortedArrPtr, 0x80))
+                mstore(add(sortedArrPtr, 0x80), mload(add(sortedArrPtr, 0xa0)))
+                mstore(add(sortedArrPtr, 0xa0), temp)
+            }
+
+            // sixth comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0xa0)), mload(add(sortedArrPtr, 0xc0))) {
+                let temp := mload(add(sortedArrPtr, 0xa0))
+                mstore(add(sortedArrPtr, 0xa0), mload(add(sortedArrPtr, 0xc0)))
+                mstore(add(sortedArrPtr, 0xc0), temp)
+            }
+
+            // seventh comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0xc0)), mload(add(sortedArrPtr, 0xe0))) {
+                let temp := mload(add(sortedArrPtr, 0xc0))
+                mstore(add(sortedArrPtr, 0xc0), mload(add(sortedArrPtr, 0xe0)))
+                mstore(add(sortedArrPtr, 0xe0), temp)
+            }
+
+            // eighth comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0xe0)), mload(add(sortedArrPtr, 0x100))) {
+                let temp := mload(add(sortedArrPtr, 0xe0))
+                mstore(add(sortedArrPtr, 0xe0), mload(add(sortedArrPtr, 0x100)))
+                mstore(add(sortedArrPtr, 0x100), temp)
+            }
+
+            // ninth comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0x100)), mload(add(sortedArrPtr, 0x120))) {
+                let temp := mload(add(sortedArrPtr, 0x100))
+                mstore(add(sortedArrPtr, 0x100), mload(add(sortedArrPtr, 0x120)))
+                mstore(add(sortedArrPtr, 0x120), temp)
+            }
+
 
             // ninth pass
-            if gt(mload(add(sortedArr, 0x00)), mload(add(sortedArr, 0x20))) { swap(sortedArr, 0, 1) }
-            if gt(mload(add(sortedArr, 0x20)), mload(add(sortedArr, 0x40))) { swap(sortedArr, 1, 2) }
-            // ... continue for all adjacent pairs
+            // first comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0x00)), mload(add(sortedArrPtr, 0x20))) {
+                let temp := mload(add(sortedArrPtr, 0x00))
+                mstore(add(sortedArrPtr, 0x00), mload(add(sortedArrPtr, 0x20)))
+                mstore(add(sortedArrPtr, 0x20), temp)
+            }
+
+            // second comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0x20)), mload(add(sortedArrPtr, 0x40))) {
+                let temp := mload(add(sortedArrPtr, 0x20))
+                mstore(add(sortedArrPtr, 0x20), mload(add(sortedArrPtr, 0x40)))
+                mstore(add(sortedArrPtr, 0x40), temp)
+            }
+
+            // third comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0x40)), mload(add(sortedArrPtr, 0x60))) {
+                let temp := mload(add(sortedArrPtr, 0x40))
+                mstore(add(sortedArrPtr, 0x40), mload(add(sortedArrPtr, 0x60)))
+                mstore(add(sortedArrPtr, 0x60), temp)
+            }
+
+            // fourth comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0x60)), mload(add(sortedArrPtr, 0x80))) {
+                let temp := mload(add(sortedArrPtr, 0x60))
+                mstore(add(sortedArrPtr, 0x60), mload(add(sortedArrPtr, 0x80)))
+                mstore(add(sortedArrPtr, 0x80), temp)
+            }
+
+            // fifth comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0x80)), mload(add(sortedArrPtr, 0xa0))) {
+                let temp := mload(add(sortedArrPtr, 0x80))
+                mstore(add(sortedArrPtr, 0x80), mload(add(sortedArrPtr, 0xa0)))
+                mstore(add(sortedArrPtr, 0xa0), temp)
+            }
+
+            // sixth comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0xa0)), mload(add(sortedArrPtr, 0xc0))) {
+                let temp := mload(add(sortedArrPtr, 0xa0))
+                mstore(add(sortedArrPtr, 0xa0), mload(add(sortedArrPtr, 0xc0)))
+                mstore(add(sortedArrPtr, 0xc0), temp)
+            }
+
+            // seventh comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0xc0)), mload(add(sortedArrPtr, 0xe0))) {
+                let temp := mload(add(sortedArrPtr, 0xc0))
+                mstore(add(sortedArrPtr, 0xc0), mload(add(sortedArrPtr, 0xe0)))
+                mstore(add(sortedArrPtr, 0xe0), temp)
+            }
+
+            // eighth comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0xe0)), mload(add(sortedArrPtr, 0x100))) {
+                let temp := mload(add(sortedArrPtr, 0xe0))
+                mstore(add(sortedArrPtr, 0xe0), mload(add(sortedArrPtr, 0x100)))
+                mstore(add(sortedArrPtr, 0x100), temp)
+            }
+
+            // ninth comparison and potential swap
+            if gt(mload(add(sortedArrPtr, 0x100)), mload(add(sortedArrPtr, 0x120))) {
+                let temp := mload(add(sortedArrPtr, 0x100))
+                mstore(add(sortedArrPtr, 0x100), mload(add(sortedArrPtr, 0x120)))
+                mstore(add(sortedArrPtr, 0x120), temp)
+            }
+
+
 
             // No additional steps needed to return sortedArr as it's already the name of the return variable
         }
