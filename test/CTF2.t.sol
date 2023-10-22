@@ -19,3 +19,6 @@ contract SolutionTest is Test {
 
     }
 }
+
+
+// in test go through left to right ensuring that each step is less tahn or eq to

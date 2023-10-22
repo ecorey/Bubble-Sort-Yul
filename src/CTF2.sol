@@ -19,11 +19,13 @@ interface Isolution2 {
 function solution(uint256[10] calldata unsortedArray) external returns (uint256[10] memory sortedArray);
 }
 
+
+
 contract CTF2 is Isolution2 {
 
-
-    function solution( uint256[10] calldata unsortedArray) 
-        external pure override returns (uint256[10] memory sortedArr) {
+    // function in Solidity before being converted to YUL
+    function solutionNotOptimized( uint256[10] calldata unsortedArray) 
+        external pure returns (uint256[10] memory sortedArr) {
         
             uint n = unsortedArray.length;
 
@@ -42,6 +44,25 @@ contract CTF2 is Isolution2 {
             return sortedArr;        
         
     }
+
+
+    // The function after using YUL for the login in the nested for loop
+    function solution(uint256[10] calldata unsortedArray)
+        external pure override returns(uint256[10] memory sortedArray) {
+            assembly {
+                // length of the array
+                let n := 10
+
+                for { let i := 0 } lt(i, sub(n, 1)) { i := add(i, 1) }
+                {
+                    for { let j := 0 } lt(j, sub(sub(n, i), 1)) { j := add(j, 1) }
+                    {
+                        // code to perform
+                    }
+                }
+            }
+        }
+
 
 }
 
