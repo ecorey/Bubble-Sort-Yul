@@ -45,6 +45,7 @@ contract CTF2 is Isolution2 {
 
 
   // Optimized manually no loops
+  // gas: 8186 
   function solution(uint256[10] calldata unsortedArray) 
     external pure returns (uint256[10] memory sortedArr) {
     assembly {
