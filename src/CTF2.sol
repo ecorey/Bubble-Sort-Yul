@@ -9,7 +9,7 @@
 
 //SPDX-License-Identifier:MIT
 
-pragma solidity 0.8.21;
+pragma solidity 0.8.19;
 
 
 interface Isolution2 {
@@ -20,31 +20,31 @@ function solution(uint256[10] calldata unsortedArray) external returns (uint256[
 
 contract CTF2 is Isolution2 {
 
-    // function in Solidity before being converted to YUL
-    function solutionNotOptimized( uint256[10] calldata unsortedArray) 
-        external pure returns (uint256[10] memory sortedArr) {
+    // function in Solidity before being converted to YUL and optimized
+    // function solutionNotOptimized( uint256[10] calldata unsortedArray) 
+    //     external pure returns (uint256[10] memory sortedArr) {
         
-            uint n = unsortedArray.length;
+    //         uint n = unsortedArray.length;
 
-            uint[10] memory sortedArr = unsortedArray;
+    //         uint[10] memory sortedArr = unsortedArray;
 
-            // Traverse through all elements in the array
-            for(uint i = 0; i < n; i++) {
-                // Last i elements are already in place, so skip them
-                for(uint j = 0; j < n-i-1; j++) {
-                    // Swap if the element found is greater than the next element
-                    if(sortedArr[j] > sortedArr[j+1]) {
-                        (sortedArr[j], sortedArr[j+1]) = (sortedArr[j+1], sortedArr[j]);
-                    }
-                }
-            }
-            return sortedArr;        
+    //         // Traverse through all elements in the array
+    //         for(uint i = 0; i < n; i++) {
+    //             // Last i elements are already in place, so skip them
+    //             for(uint j = 0; j < n-i-1; j++) {
+    //                 // Swap if the element found is greater than the next element
+    //                 if(sortedArr[j] > sortedArr[j+1]) {
+    //                     (sortedArr[j], sortedArr[j+1]) = (sortedArr[j+1], sortedArr[j]);
+    //                 }
+    //             }
+    //         }
+    //         return sortedArr;        
         
-    }
+    // }
 
 
 
-  // Optimized manually
+  // Optimized manually no loops
   function solution(uint256[10] calldata unsortedArray) 
     external pure returns (uint256[10] memory sortedArr) {
     assembly {
@@ -53,16 +53,26 @@ contract CTF2 is Isolution2 {
         
 
         // manual copying of the unsortedArray to sortedArrPtr to be later sorted
-        mstore(add(sortedArr, 0x20), calldataload(add(unsortedArray, 0x00)))  // copy 1st element
-        mstore(add(sortedArr, 0x40), calldataload(add(unsortedArray, 0x40)))  // copy 2nd element
-        mstore(add(sortedArr, 0x60), calldataload(add(unsortedArray, 0x60)))  // copy 3rd element
-        mstore(add(sortedArr, 0x80), calldataload(add(unsortedArray, 0x80)))  // copy 4th element
-        mstore(add(sortedArr, 0xa0), calldataload(add(unsortedArray, 0xa0)))  // copy 5th element
-        mstore(add(sortedArr, 0xc0), calldataload(add(unsortedArray, 0xc0)))  // copy 6th element
-        mstore(add(sortedArr, 0xe0), calldataload(add(unsortedArray, 0xe0)))  // copy 7th element
-        mstore(add(sortedArr, 0x100), calldataload(add(unsortedArray, 0x100)))// copy 8th element
-        mstore(add(sortedArr, 0x120), calldataload(add(unsortedArray, 0x120)))// copy 9th element
-        mstore(add(sortedArr, 0x140), calldataload(add(unsortedArray, 0x140)))// copy 10th element
+        // copy 1st element
+        mstore(add(sortedArr, 0x00), calldataload(add(unsortedArray, 0x00)))  
+        // copy 2nd element
+        mstore(add(sortedArr, 0x20), calldataload(add(unsortedArray, 0x20)))  
+        // copy 3rd element
+        mstore(add(sortedArr, 0x40), calldataload(add(unsortedArray, 0x40)))  
+        // copy 4th element
+        mstore(add(sortedArr, 0x60), calldataload(add(unsortedArray, 0x60)))  
+        // copy 5th element
+        mstore(add(sortedArr, 0x80), calldataload(add(unsortedArray, 0x80)))  
+        // copy 6th element
+        mstore(add(sortedArr, 0xa0), calldataload(add(unsortedArray, 0xa0)))  
+        // copy 7th element
+        mstore(add(sortedArr, 0xc0), calldataload(add(unsortedArray, 0xc0))) 
+        // copy 8th element
+        mstore(add(sortedArr, 0xe0), calldataload(add(unsortedArray, 0xe0)))
+        // copy 9th element
+        mstore(add(sortedArr, 0x100), calldataload(add(unsortedArray, 0x100)))
+        // copy 10th element
+        mstore(add(sortedArr, 0x120), calldataload(add(unsortedArray, 0x120)))
 
         
 
@@ -664,8 +674,6 @@ contract CTF2 is Isolution2 {
         }
 
 
-
-            // No additional steps needed to return sortedArr as it's already the name of the return variable
         }
     }
 
